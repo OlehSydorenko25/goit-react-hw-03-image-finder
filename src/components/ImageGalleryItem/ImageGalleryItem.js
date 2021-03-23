@@ -5,18 +5,17 @@ import styles from './ImageGalleryItem.module.css'
 
 class ImageGalleryItem extends Component {
 
-    onKlickImg = e => {
-        this.props.toggleModal(e.target.dataset.img)
+    onClickImg = (bigImg) => {
+        this.props.toggleModal()
+        this.props.getModalImg(bigImg)
     }
 
     render() {
         const {webformatURL, largeImageURL} = this.props
         return (
-             <li className={styles.ImageGalleryItem}>
+             <li className={styles.ImageGalleryItem} onClick={() => this.onClickImg(largeImageURL)}>
                 <img src={webformatURL} alt=""
                     className={styles.ImageGalleryItemImage}
-                    data-img={largeImageURL}
-                    onClick={this.onKlickImg}
                 />
             </li>
         );

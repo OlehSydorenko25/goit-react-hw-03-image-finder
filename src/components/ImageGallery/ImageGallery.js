@@ -1,11 +1,11 @@
 
 import React from 'react';
-import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem'
+import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import PropTypes from 'prop-types';
-import styles from './ImageGallery.module.css'
+import styles from './ImageGallery.module.css';
 
 
-const ImageGallery = ({ ArrGallary, toggleModal }) => {
+const ImageGallery = ({ ArrGallary, toggleModal, getModalImg}) => {
     return (
         <ul className={styles.ImageGallery}>
             {ArrGallary.map(({id, webformatURL, largeImageURL}) => {
@@ -15,6 +15,7 @@ const ImageGallery = ({ ArrGallary, toggleModal }) => {
                         webformatURL={webformatURL}
                         largeImageURL={largeImageURL}
                         toggleModal={toggleModal}
+                        getModalImg={getModalImg}
                     />
                 )
             })}
@@ -23,8 +24,14 @@ const ImageGallery = ({ ArrGallary, toggleModal }) => {
 }
 
 ImageGallery.propTypes = {
-    ArrGallary: PropTypes.array.isRequired,
-    toggleModal: PropTypes.func.isRequired
-}
+    ArrGallary: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+    }),
+    ).isRequired,
+    toggleModal: PropTypes.func,
+    getModalImg: PropTypes.func
+    
+};
  
 export default ImageGallery;

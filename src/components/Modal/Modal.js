@@ -6,10 +6,12 @@ class Modal extends Component {
 
     componentDidMount() {
         window.addEventListener('keydown', this.handlekeyDown)
+        window.addEventListener('click', this.handlekeyDown)
     }
 
     componentWillUnmount() {
         window.removeEventListener('keydown', this.handlekeyDown)
+        window.removeEventListener('click', this.handlekeyDown)
     }
 
     handlekeyDown = e => {
@@ -17,12 +19,18 @@ class Modal extends Component {
             this.props.toggleModal()
         }
     }
+    handleOverlayClick = e => {
+        if (e.target === e.currentTarget) {
+            this.props.toggleModal()
+        }
+    }
 
     render() { 
+        
         return (
-            <div className={styles.Overlay}>
+            <div className={styles.Overlay} onClick={this.handleOverlayClick}>
                 <div className={styles.Module}>
-                    <img src={this.props.modalImg} alt="" />
+                    <img src={this.props.selectedImg} alt="" />
                 </div>
             </div>
         );
@@ -30,7 +38,7 @@ class Modal extends Component {
 }
 
 Modal.propTypes = {
-    modalImg: PropTypes.string
+    selectedImg: PropTypes.string
 }
  
 export default Modal;

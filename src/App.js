@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import Searchbar from './Searchbar/Searchbar'
-import ImageGallery from './ImageGallery/ImageGallery'
-import Spiner from './Loader/Loader'
-import Button from './Button/Button'
-import Modal from './Modal/Modal'
+import Searchbar from './components/Searchbar/Searchbar'
+import ImageGallery from './components/ImageGallery/ImageGallery'
+import Spiner from './components/Loader/Loader'
+import Button from './components/Button/Button'
+import Modal from './components/Modal/Modal'
 import fetchImages from './services/news-api'
 
 class App extends Component {
@@ -12,9 +12,10 @@ class App extends Component {
     gallery: [],
     currentPage: 1,
     searchQuery: '',
+    perPage: 12,
     isLoding: false,
     showModal: false,
-    modalImg: ''
+    selectedImg: ''
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -23,16 +24,15 @@ class App extends Component {
     }
   }
 
-  toggleModal = (value) => {
-    this.getModalImg(value)
+  toggleModal = () => {
     this.setState({
       showModal: !this.state.showModal,
     })
   }
 
-  getModalImg (value) {
+  getModalImg = (value) => {
     this.setState({
-      modalImg: value
+      selectedImg: value
     })
   }
 
@@ -45,8 +45,8 @@ class App extends Component {
   }
 
   fetchImg = () => {
-    const { currentPage, searchQuery } = this.state
-    const option = { currentPage, searchQuery }
+    const { currentPage, searchQuery, perPage } = this.state
+    const option = { currentPage, searchQuery, perPage }
 
     this.setState({ isLoding: true })
     
@@ -55,7 +55,7 @@ class App extends Component {
         gallery: [...prevState.gallery, ...response.data.hits],
         currentPage: prevState.currentPage + 1
       }))
-    }).finally(() => {
+    }).catch(err => console.log(err)).finally(() => {
           this.setState({ isLoding: false })
           
           window.scrollTo({
@@ -66,15 +66,16 @@ class App extends Component {
   }
 
   render() {
-    const { gallery, isLoding, showModal, modalImg } = this.state
+    const { gallery, isLoding, showModal, selectedImg } = this.state
+    const checkLenghtGallery = gallery.length < 12;
     
     return (
       <>
-        {showModal && <Modal modalImg={modalImg} toggleModal={this.toggleModal}/>}
+        {showModal && <Modal selectedImg={selectedImg} toggleModal={this.toggleModal}/>}
         <Searchbar onSubmit={this.onChangeQuery}/>
-        <ImageGallery ArrGallary={gallery} toggleModal={this.toggleModal}/>
+        <ImageGallery ArrGallary={gallery} toggleModal={this.toggleModal} getModalImg={this.getModalImg}/>
         {isLoding && <Spiner />}
-        {!isLoding && gallery.length > 0 && <Button fetchImg={this.fetchImg}/>}
+        {!isLoding && gallery.length > 0 && !checkLenghtGallery && <Button fetchImg={this.fetchImg}/>}
       </>
     );
   }
